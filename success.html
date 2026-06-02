@@ -102,35 +102,39 @@
         
         const apiBaseUrl = "https://optometrical-demetria-superexpressive.ngrok-free.dev";
         const urlParams = new URLSearchParams(window.location.search);
+        const currentStatus = urlParams.get("status");
 
-        // 1. Run an instant Health Pre-Check connection check
+        // ANTI-REFRESH / ANTI-BOOKMARK: Instantly wipe query tokens from address bar
+        if (currentStatus) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        // 1. Check if backend is alive
         try {
             const healthCheck = await fetch(`${apiBaseUrl}/health`, { 
                 method: "GET",
                 headers: { "ngrok-skip-browser-warning": "69420" }
             });
-            
-            if (!healthCheck.ok) throw new Error("Server offline");
+            if (!healthCheck.ok) throw new Error("Offline");
         } catch (err) {
-            // Server is down -> Trigger the warning banner instantly
             offlineBanner.style.display = "block";
             keyDisplay.style.color = "#ff3333";
             keyDisplay.innerText = "❌ Security System Offline. Do not pass checkpoints.";
             return;
         }
 
-        // 2. Simple URL Param Check
-        if (urlParams.get("status") !== "completed") {
+        // 2. Enforce check constraint
+        if (currentStatus !== "completed") {
             keyDisplay.style.color = "#ff3333";
-            keyDisplay.innerText = "❌ Access Denied: Complete checkpoints.";
+            keyDisplay.innerText = "❌ Access Denied: You cannot load this page directly or refresh it.";
             return;
         }
 
-        keyDisplay.innerText = "Generating key...";
+        keyDisplay.innerText = "Generating key safely...";
         
-        // 3. Request Key Generation (Zero LootLabs interaction)
+        // 3. Issue key request block using standard payload validation
         try {
-            const response = await fetch(`${apiBaseUrl}/web-genkey`, {
+            const response = await fetch(`${apiBaseUrl}/web-genkey?claim_token=LOOT_VALID_PASS`, {
                 method: "GET",
                 headers: { "ngrok-skip-browser-warning": "69420" }
             });
@@ -144,7 +148,7 @@
             }
         } catch (error) {
             keyDisplay.style.color = "#ff3333";
-            keyDisplay.innerText = "❌ Key generation failed to process.";
+            keyDisplay.innerText = "❌ Key processing execution error.";
         }
     });
     </script>
