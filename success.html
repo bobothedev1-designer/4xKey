@@ -68,7 +68,8 @@
         <h1>🎉 Verification Passed</h1>
         <p style="color: var(--text-dim);">Your checkpoints are complete. Below is your generated 4X license key:</p>
         
-        <div id="key-display" class="key-container">Verifying Checkpoints...</div>
+        <!-- The key string or error logs will populate here -->
+        <div id="key-display" class="key-container">Initializing Anti-Bypass...</div>
         
         <p class="instructions">
             👉 Copy this key and head over to your Discord server.<br>
@@ -81,29 +82,40 @@
     window.addEventListener("DOMContentLoaded", async function() {
         const keyDisplay = document.getElementById("key-display");
         
-        // 1. Double check that the status parameter exists
+        // 1. Verify URL parameters are present
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get("status") !== "completed") {
             keyDisplay.style.color = "#ff3333";
-            keyDisplay.innerText = "❌ Access Denied: Complete checkpoints.";
+            keyDisplay.innerText = "❌ Access Denied: URL token manipulation detected.";
             return;
         }
 
-        // 2. Contact your background ngrok server to fetch the key
-        const apiBaseUrl = "https://optometrical-demetria-superexpressive.ngrok-free.dev";
-
+        keyDisplay.innerText = "Verifying checkpoints...";
+        
         try {
-            const response = await fetch(`${apiBaseUrl}/web-genkey`);
+            // 2. Fetch user's public IP address securely
+            const ipResponse = await fetch("https://api.ipify.org?format=json");
+            const ipData = await ipResponse.json();
+            const userIp = ipData.ip;
+
+            // Your dedicated public Ngrok tunnel URL
+            const apiBaseUrl = "https://optometrical-demetria-superexpressive.ngrok-free.dev";
+
+            // 3. Send the verification payload to your local backend
+            const response = await fetch(`${apiBaseUrl}/web-genkey?ip=${userIp}`);
+            const data = await response.json();
+
             if (response.ok) {
-                const data = await response.json();
-                // Put the newly logged key on the screen for them to copy
+                // Display the newly generated database key
                 keyDisplay.innerText = data.key;
             } else {
-                keyDisplay.innerText = "Error: Database busy.";
+                keyDisplay.style.color = "#ff3333";
+                keyDisplay.innerText = data.error || "❌ Verification failed.";
             }
         } catch (error) {
             console.error(error);
-            keyDisplay.innerText = "Error: Server offline.";
+            keyDisplay.style.color = "#ff3333";
+            keyDisplay.innerText = "❌ Security System Offline.";
         }
     });
     </script>
