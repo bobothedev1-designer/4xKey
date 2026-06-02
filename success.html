@@ -11,6 +11,7 @@
             --accent-glow: #ff4da6;
             --text-bright: #ffffff;
             --text-dim: #b5a4bc;
+            --warning-color: #ffcc00;
         }
 
         body {
@@ -34,6 +35,19 @@
             max-width: 500px;
             width: 90%;
             box-shadow: 0 0 30px rgba(255, 77, 166, 0.2);
+            position: relative;
+        }
+
+        .status-banner {
+            display: none;
+            background: rgba(255, 204, 0, 0.15);
+            border: 1px solid var(--warning-color);
+            color: var(--warning-color);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            font-weight: bold;
         }
 
         h1 {
@@ -65,10 +79,14 @@
 <body>
 
     <div class="success-box">
+        <div id="offline-banner" class="status-banner">
+            ⚠️ Bot / Verification Server is currently inactive. Please wait before completing links!
+        </div>
+
         <h1>🎉 Verification Passed</h1>
         <p style="color: var(--text-dim);">Your checkpoints are complete. Below is your generated 4X license key:</p>
         
-        <div id="key-display" class="key-container">Generating Key...</div>
+        <div id="key-display" class="key-container">Checking Server Status...</div>
         
         <p class="instructions">
             👉 Copy this key and head over to your Discord server.<br>
@@ -80,22 +98,41 @@
     <script>
     window.addEventListener("DOMContentLoaded", async function() {
         const keyDisplay = document.getElementById("key-display");
+        const offlineBanner = document.getElementById("offline-banner");
         
+        const apiBaseUrl = "https://optometrical-demetria-superexpressive.ngrok-free.dev";
         const urlParams = new URLSearchParams(window.location.search);
+
+        // 1. Run an instant Health Pre-Check connection check
+        try {
+            const healthCheck = await fetch(`${apiBaseUrl}/health`, { 
+                method: "GET",
+                headers: { "ngrok-skip-browser-warning": "69420" }
+            });
+            
+            if (!healthCheck.ok) throw new Error("Server reporting error status.");
+        } catch (err) {
+            // Server is down or missing -> Trigger home page warning
+            offlineBanner.style.display = "block";
+            keyDisplay.style.color = "#ff3333";
+            keyDisplay.innerText = "❌ Security System Offline. Do not pass checkpoints.";
+            return;
+        }
+
+        // 2. Route Query Parameters Security Analysis
         if (urlParams.get("status") !== "completed") {
             keyDisplay.style.color = "#ff3333";
             keyDisplay.innerText = "❌ Access Denied: Complete checkpoints.";
             return;
         }
-        
-        try {
-            const apiBaseUrl = "https://optometrical-demetria-superexpressive.ngrok-free.dev";
 
+        keyDisplay.innerText = "Verifying link with LootLabs...";
+        
+        // 3. Request Token Authentication Generation Block
+        try {
             const response = await fetch(`${apiBaseUrl}/web-genkey`, {
                 method: "GET",
-                headers: {
-                    "ngrok-skip-browser-warning": "69420"
-                }
+                headers: { "ngrok-skip-browser-warning": "69420" }
             });
             const data = await response.json();
 
@@ -106,9 +143,8 @@
                 keyDisplay.innerText = data.error || "❌ Verification failed.";
             }
         } catch (error) {
-            console.error(error);
             keyDisplay.style.color = "#ff3333";
-            keyDisplay.innerText = "❌ Security System Offline.";
+            keyDisplay.innerText = "❌ Verification failed to process.";
         }
     });
     </script>
