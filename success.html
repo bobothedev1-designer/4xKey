@@ -81,27 +81,20 @@
     window.addEventListener("DOMContentLoaded", async function() {
         const keyDisplay = document.getElementById("key-display");
         
-        // 1. Verify URL parameters are present
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get("status") !== "completed") {
             keyDisplay.style.color = "#ff3333";
-            keyDisplay.innerText = "❌ Access Denied: URL token manipulation detected.";
+            keyDisplay.innerText = "❌ Access Denied: Complete checkpoints.";
             return;
         }
 
         keyDisplay.innerText = "Verifying checkpoints...";
         
         try {
-            // 2. Fetch user's public IP address securely
-            const ipResponse = await fetch("https://api.ipify.org?format=json");
-            const ipData = await ipResponse.json();
-            const userIp = ipData.ip;
-
-            // Your dedicated public Ngrok tunnel URL
             const apiBaseUrl = "https://optometrical-demetria-superexpressive.ngrok-free.dev";
 
-            // 3. Send the verification payload to your local backend with the bypass header included
-            const response = await fetch(`${apiBaseUrl}/web-genkey?ip=${userIp}`, {
+            // Fire the request directly to your python server
+            const response = await fetch(`${apiBaseUrl}/web-genkey`, {
                 method: "GET",
                 headers: {
                     "ngrok-skip-browser-warning": "69420"
@@ -110,7 +103,6 @@
             const data = await response.json();
 
             if (response.ok) {
-                // Display the newly generated database key
                 keyDisplay.innerText = data.key;
             } else {
                 keyDisplay.style.color = "#ff3333";
