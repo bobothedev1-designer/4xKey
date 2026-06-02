@@ -110,25 +110,25 @@
                 headers: { "ngrok-skip-browser-warning": "69420" }
             });
             
-            if (!healthCheck.ok) throw new Error("Server reporting error status.");
+            if (!healthCheck.ok) throw new Error("Server offline");
         } catch (err) {
-            // Server is down or missing -> Trigger home page warning
+            // Server is down -> Trigger the warning banner instantly
             offlineBanner.style.display = "block";
             keyDisplay.style.color = "#ff3333";
             keyDisplay.innerText = "❌ Security System Offline. Do not pass checkpoints.";
             return;
         }
 
-        // 2. Route Query Parameters Security Analysis
+        // 2. Simple URL Param Check
         if (urlParams.get("status") !== "completed") {
             keyDisplay.style.color = "#ff3333";
             keyDisplay.innerText = "❌ Access Denied: Complete checkpoints.";
             return;
         }
 
-        keyDisplay.innerText = "Verifying link with LootLabs...";
+        keyDisplay.innerText = "Generating key...";
         
-        // 3. Request Token Authentication Generation Block
+        // 3. Request Key Generation (Zero LootLabs interaction)
         try {
             const response = await fetch(`${apiBaseUrl}/web-genkey`, {
                 method: "GET",
@@ -144,7 +144,7 @@
             }
         } catch (error) {
             keyDisplay.style.color = "#ff3333";
-            keyDisplay.innerText = "❌ Verification failed to process.";
+            keyDisplay.innerText = "❌ Key generation failed to process.";
         }
     });
     </script>
