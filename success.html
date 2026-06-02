@@ -68,7 +68,7 @@
         <h1>🎉 Verification Passed</h1>
         <p style="color: var(--text-dim);">Your checkpoints are complete. Below is your generated 4X license key:</p>
         
-        <div id="key-display" class="key-container">Initializing Anti-Bypass...</div>
+        <div id="key-display" class="key-container">Generating Key...</div>
         
         <p class="instructions">
             👉 Copy this key and head over to your Discord server.<br>
@@ -87,13 +87,10 @@
             keyDisplay.innerText = "❌ Access Denied: Complete checkpoints.";
             return;
         }
-
-        keyDisplay.innerText = "Verifying checkpoints...";
         
         try {
             const apiBaseUrl = "https://optometrical-demetria-superexpressive.ngrok-free.dev";
 
-            // Fire the request directly to your python server
             const response = await fetch(`${apiBaseUrl}/web-genkey`, {
                 method: "GET",
                 headers: {
