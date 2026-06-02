@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4X Bot Dashboard</title>
+    <style>
+        /* --- EASY STYLING CONFIGURATIONS --- */
+        :root {
+            --bg-main: #0a050d;          /* Deep dark background */
+            --bg-card: #140b1a;          /* Sleek container panels */
+            --accent-glow: #ff4da6;      /* Vibrant neon pink accents */
+            --text-bright: #ffffff;      /* Main text headers */
+            --text-dim: #b5a4bc;         /* Descriptive subtext */
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-bright);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- CLEAN HEADER BANNER --- */
+        header {
+            width: 100%;
+            max-width: 1200px;
+            padding: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 8px var(--accent-glow));
+        }
+
+        .brand-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--text-bright);
+        }
+
+        /* --- HERO DISPLAY AREA --- */
+        .hero-container {
+            width: 100%;
+            max-width: 1100px;
+            padding: 60px 20px;
+            box-sizing: border-box;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .headline-badge {
+            display: inline-block;
+            background: rgba(255, 77, 166, 0.1);
+            border: 1px solid var(--accent-glow);
+            color: var(--accent-glow);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 15px rgba(255, 77, 166, 0.2);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin: 0 0 15px 0;
+            letter-spacing: -1px;
+        }
+
+        .sub-tagline {
+            font-size: 1.25rem;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin: 0 auto 50px auto;
+            line-height: 1.6;
+        }
+
+        /* --- INTERACTIVE GRID VISUALS --- */
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 40px;
+            align-items: center;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        @media (max-width: 768px) {
+            .showcase-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .showcase-card {
+            background-color: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            position: relative;
+        }
+
+        .media-frame {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 77, 166, 0.2);
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+            object-fit: cover;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 25px 0 0 0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            color: var(--text-bright);
+            font-size: 1.05rem;
+        }
+
+        .feature-icon {
+            color: var(--accent-glow);
+            font-weight: bold;
+        }
+
+        /* --- THE AUTOMATED ROUTING BUTTON --- */
+        .cta-wrapper {
+            margin-top: 50px;
+        }
+
+        .claim-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent-glow), #d4006b);
+            color: var(--text-bright);
+            padding: 18px 45px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            text-decoration: none;
+            border-radius: 35px;
+            box-shadow: 0 0 25px rgba(255, 77, 166, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .claim-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 35px var(--accent-glow);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand-wrapper">
+            <img src="logo.png" alt="4X Logo" class="brand-logo" onerror="this.style.display='none'">
+            <div class="brand-title">4X BOT</div>
+        </div>
+    </header>
+
+    <div class="hero-container">
+        <span class="headline-badge">Best Arsenal Script Companion</span>
+        <h1>Unlock Premium Authentication</h1>
+        <p class="sub-tagline">Complete the verified security checkpoints below to generate your unique license key and link your Discord profile.</p>
+
+        <div class="showcase-grid">
+            
+            <div class="showcase-card">
+                <h2 style="font-size: 1.8rem; margin-top: 0;">System Utilities</h2>
+                <p style="color: var(--text-dim); line-height: 1.5;">Gain immediate access to automated role tracking, account whitelisting synchronization, and instant command authorization profiles.</p>
+                
+                <ul class="feature-list">
+                    <li class="feature-item"><span class="feature-icon">✓</span> 30-Day & Lifetime Keys Available</li>
+                    <li class="feature-item"><span class="feature-icon">✓</span> Real-Time Database Validation</li>
+                    <li class="feature-item"><span class="feature-icon">✓</span> Admin Dashboard Recovery Tools</li>
+                    <li class="feature-item"><span class="feature-icon">✓</span> Instant Profile Provisioning</li>
+                </ul>
+            </div>
+
+            <div class="showcase-card" style="padding: 15px;">
+                <img src="preview.png" alt="4X UI Interface Preview" class="media-frame" onerror="this.src='repaired_1776011849.jpg'">
+            </div>
+
+        </div>
+
+        <div class="cta-wrapper">
+            <a href="YOUR_LOOTLABS_LINK_HERE" class="claim-btn">Proceed To Checkpoints</a>
+        </div>
+    </div>
+
+</body>
+</html>
