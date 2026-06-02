@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4X Bot - Access Granted</title>
+    <style>
+        :root {
+            --bg-main: #0a050d;
+            --bg-card: #140b1a;
+            --accent-glow: #ff4da6;
+            --text-bright: #ffffff;
+            --text-dim: #b5a4bc;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-bright);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .success-box {
+            background-color: var(--bg-card);
+            border: 1px solid var(--accent-glow);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 0 30px rgba(255, 77, 166, 0.2);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: var(--text-bright);
+            margin-top: 0;
+        }
+
+        .key-container {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px dashed rgba(255, 77, 166, 0.5);
+            padding: 15px;
+            font-family: monospace;
+            font-size: 1.4rem;
+            letter-spacing: 1px;
+            color: var(--accent-glow);
+            margin: 25px 0;
+            border-radius: 8px;
+            word-break: break-all;
+        }
+
+        .instructions {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="success-box">
+        <h1>🎉 Verification Passed</h1>
+        <p style="color: var(--text-dim);">Your checkpoints are complete. Below is your generated 4X license key:</p>
+        
+        <div id="key-display" class="key-container">Verifying Checkpoints...</div>
+        
+        <p class="instructions">
+            👉 Copy this key and head over to your Discord server.<br>
+            Use the command: <br>
+            <span style="color: #fff; font-weight: bold;">/redeemkey key: [your_key] username: [your_username]</span>
+        </p>
+    </div>
+
+    <script>
+    window.addEventListener("DOMContentLoaded", async function() {
+        const keyDisplay = document.getElementById("key-display");
+        
+        // 1. Double check that the status parameter exists
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get("status") !== "completed") {
+            keyDisplay.style.color = "#ff3333";
+            keyDisplay.innerText = "❌ Access Denied: Complete checkpoints.";
+            return;
+        }
+
+        // 2. Contact your background ngrok server to fetch the key
+        const apiBaseUrl = "https://optometrical-demetria-superexpressive.ngrok-free.dev";
+
+        try {
+            const response = await fetch(`${apiBaseUrl}/web-genkey`);
+            if (response.ok) {
+                const data = await response.json();
+                // Put the newly logged key on the screen for them to copy
+                keyDisplay.innerText = data.key;
+            } else {
+                keyDisplay.innerText = "Error: Database busy.";
+            }
+        } catch (error) {
+            console.error(error);
+            keyDisplay.innerText = "Error: Server offline.";
+        }
+    });
+    </script>
+
+</body>
+</html>
