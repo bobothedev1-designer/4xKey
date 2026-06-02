@@ -68,7 +68,6 @@
         <h1>🎉 Verification Passed</h1>
         <p style="color: var(--text-dim);">Your checkpoints are complete. Below is your generated 4X license key:</p>
         
-        <!-- The key string or error logs will populate here -->
         <div id="key-display" class="key-container">Initializing Anti-Bypass...</div>
         
         <p class="instructions">
@@ -101,8 +100,13 @@
             // Your dedicated public Ngrok tunnel URL
             const apiBaseUrl = "https://optometrical-demetria-superexpressive.ngrok-free.dev";
 
-            // 3. Send the verification payload to your local backend
-            const response = await fetch(`${apiBaseUrl}/web-genkey?ip=${userIp}`);
+            // 3. Send the verification payload to your local backend with the bypass header included
+            const response = await fetch(`${apiBaseUrl}/web-genkey?ip=${userIp}`, {
+                method: "GET",
+                headers: {
+                    "ngrok-skip-browser-warning": "69420"
+                }
+            });
             const data = await response.json();
 
             if (response.ok) {
