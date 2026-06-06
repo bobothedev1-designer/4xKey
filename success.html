@@ -50,11 +50,7 @@
             font-weight: bold;
         }
 
-        h1 {
-            font-size: 2.2rem;
-            color: var(--text-bright);
-            margin-top: 0;
-        }
+        h1 { font-size: 2.2rem; color: var(--text-bright); margin-top: 0; }
 
         .key-container {
             background: rgba(0, 0, 0, 0.4);
@@ -69,18 +65,14 @@
             word-break: break-all;
         }
 
-        .instructions {
-            color: var(--text-dim);
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
+        .instructions { color: var(--text-dim); font-size: 0.95rem; line-height: 1.5; }
     </style>
 </head>
 <body>
 
     <div class="success-box">
         <div id="offline-banner" class="status-banner">
-            ⚠️ Bot / Verification Server is currently inactive. Please wait before completing links!
+            ⚠️ Verification Server is currently inactive. Please ensure ngrok and your Python script are active!
         </div>
 
         <h1>🎉 Verification Passed</h1>
@@ -100,18 +92,18 @@
         const keyDisplay = document.getElementById("key-display");
         const offlineBanner = document.getElementById("offline-banner");
         
-        // ⚠️ REPLACE THIS URL WITH YOUR ACTIVE NGROK LINK IF IT CHANGED
+        // Ensure this matches your active ngrok URL
         const apiBaseUrl = "https://optometrical-demetria-superexpressive.ngrok-free.dev";
         
         const urlParams = new URLSearchParams(window.location.search);
         const currentStatus = urlParams.get("status");
 
-        // ANTI-REFRESH / ANTI-BOOKMARK: Instantly wipe query tokens from address bar
+        // ANTI-REFRESH BLOCKER: Wipes the "?status=completed" from the browser window instantly
         if (currentStatus) {
             window.history.replaceState({}, document.title, window.location.pathname);
         }
 
-        // 1. Check if backend python server is alive
+        // 1. Check if local backend tunnel is alive
         try {
             const healthCheck = await fetch(`${apiBaseUrl}/health`, { 
                 method: "GET",
@@ -121,20 +113,20 @@
         } catch (err) {
             offlineBanner.style.display = "block";
             keyDisplay.style.color = "#ff3333";
-            keyDisplay.innerText = "❌ Security System Offline. Do not pass checkpoints.";
+            keyDisplay.innerText = "❌ Security System Offline.";
             return;
         }
 
-        // 2. Direct-open blocker check
+        // 2. Direct-open blocker enforcement
         if (currentStatus !== "completed") {
             keyDisplay.style.color = "#ff3333";
-            keyDisplay.innerText = "❌ Access Denied: Direct page loading or manual refreshing is blocked.";
+            keyDisplay.innerText = "❌ Anti-Bypass Triggered: Complete checkpoints honestly!";
             return;
         }
 
         keyDisplay.innerText = "Generating key safely...";
         
-        // 3. Request Key Generation using the secure token
+        // 3. Issue key request block using our secure verified payload token
         try {
             const response = await fetch(`${apiBaseUrl}/web-genkey?claim_token=LOOT_VALID_PASS`, {
                 method: "GET",
