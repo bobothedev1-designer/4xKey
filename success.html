@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4X Bot - Key Claim</title>
+    <title>4X Bot - Key Process</title>
     <style>
         body { background-color: #0a050d; color: #ffffff; font-family: sans-serif; text-align: center; padding-top: 15vh; }
         .box { background-color: #140b1a; border: 1px solid #ff4da6; padding: 40px; display: inline-block; border-radius: 16px; box-shadow: 0 0 20px rgba(255,77,166,0.2); }
@@ -14,7 +14,7 @@
 
     <div class="box">
         <h1>🎉 Finalizing Verification</h1>
-        <p id="status-text">Verifying ad-network origin headers...</p>
+        <p id="status-text">Synchronizing completion metrics with server...</p>
         <div id="key-display" class="key" style="display: none;"></div>
     </div>
 
@@ -23,6 +23,7 @@
         const statusText = document.getElementById("status-text");
         const keyDisplay = document.getElementById("key-display");
         
+        // Ensure this points directly to your current live ngrok address
         const apiBaseUrl = "https://optometrical-demetria-superexpressive.ngrok-free.dev";
         const currentQuery = window.location.search;
 
@@ -32,14 +33,14 @@
         }
 
         try {
-            // Fetch the key while forwarding the native window.location query string data
+            // Forward the original tracking string directly over to your Python app
             const response = await fetch(`${apiBaseUrl}/web-genkey${currentQuery}`, {
                 method: "GET",
                 headers: { "ngrok-skip-browser-warning": "69420" }
             });
             const data = await response.json();
 
-            // Clear url params immediately so real users don't break their reloads
+            // Clear the browser address bar variables to block normal link sharing
             window.history.replaceState({}, document.title, window.location.pathname);
 
             if (response.ok && data.key) {
