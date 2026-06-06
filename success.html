@@ -14,7 +14,7 @@
 
     <div class="box">
         <h1>🎉 Finalizing Verification</h1>
-        <p id="status-text">Synchronizing backend ad metrics...</p>
+        <p id="status-text">Checking transaction data...</p>
         <div id="key-display" class="key" style="display: none;"></div>
     </div>
 
@@ -23,19 +23,19 @@
         const statusText = document.getElementById("status-text");
         const keyDisplay = document.getElementById("key-display");
         
+        // Match this with your current active ngrok tunnel address
         const apiBaseUrl = "https://optometrical-demetria-superexpressive.ngrok-free.dev";
         const currentQuery = window.location.search;
 
-        if (currentQuery) {
-            // Instantly clear out the tracking token from the browser bar
-            window.history.replaceState({}, document.title, window.location.pathname);
-        } else {
-            statusText.innerText = "❌ Session Error: Missing tracking details.";
+        if (!currentQuery) {
+            statusText.innerText = "❌ Verification Failed: Missing redirection parameters.";
             return;
         }
 
+        // Clean out the address bar instantly so users can't copy/paste the link to friends
+        window.history.replaceState({}, document.title, window.location.pathname);
+
         try {
-            // Ask your backend server if LootLabs pinged it for this query sequence
             const response = await fetch(`${apiBaseUrl}/web-genkey${currentQuery}`, {
                 method: "GET",
                 headers: { "ngrok-skip-browser-warning": "69420" }
