@@ -14,7 +14,7 @@
 
     <div class="box">
         <h1>🎉 Finalizing Verification</h1>
-        <p id="status-text">Checking transaction data...</p>
+        <p id="status-text">Verifying ad-network origin headers...</p>
         <div id="key-display" class="key" style="display: none;"></div>
     </div>
 
@@ -23,7 +23,6 @@
         const statusText = document.getElementById("status-text");
         const keyDisplay = document.getElementById("key-display");
         
-        // Match this with your current active ngrok tunnel address
         const apiBaseUrl = "https://optometrical-demetria-superexpressive.ngrok-free.dev";
         const currentQuery = window.location.search;
 
@@ -32,15 +31,16 @@
             return;
         }
 
-        // Clean out the address bar instantly so users can't copy/paste the link to friends
-        window.history.replaceState({}, document.title, window.location.pathname);
-
         try {
+            // Fetch the key while forwarding the native window.location query string data
             const response = await fetch(`${apiBaseUrl}/web-genkey${currentQuery}`, {
                 method: "GET",
                 headers: { "ngrok-skip-browser-warning": "69420" }
             });
             const data = await response.json();
+
+            // Clear url params immediately so real users don't break their reloads
+            window.history.replaceState({}, document.title, window.location.pathname);
 
             if (response.ok && data.key) {
                 statusText.innerText = "Success! Here is your 4X license key:";
