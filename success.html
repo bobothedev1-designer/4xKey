@@ -3,42 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4X Bot - Finalizing Access</title>
+    <title>4X Bot - Access Granted</title>
     <style>
-        body { background-color: #0a050d; color: #ffffff; font-family: sans-serif; text-align: center; padding-top: 10vh; }
-        .box { background-color: #140b1a; border: 1px solid #ff4da6; padding: 40px; display: inline-block; border-radius: 12px; }
-        .key { font-family: monospace; font-size: 1.5rem; color: #ff4da6; background: rgba(0,0,0,0.3); padding: 10px; margin: 15px; border-radius: 6px; }
+        :root {
+            --bg-main: #0a050d;
+            --bg-card: #140b1a;
+            --accent-glow: #ff4da6;
+            --text-bright: #ffffff;
+            --text-dim: #b5a4bc;
+            --warning-color: #ffcc00;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-bright);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .success-box {
+            background-color: var(--bg-card);
+            border: 1px solid var(--accent-glow);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 0 30px rgba(255, 77, 166, 0.2);
+            position: relative;
+        }
+
+        .status-banner {
+            display: none;
+            background: rgba(255, 204, 0, 0.15);
+            border: 1px solid var(--warning-color);
+            color: var(--warning-color);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        h1 { font-size: 2.2rem; color: var(--text-bright); margin-top: 0; }
+
+        .key-container {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px dashed rgba(255, 77, 166, 0.5);
+            padding: 15px;
+            font-family: monospace;
+            font-size: 1.4rem;
+            letter-spacing: 1px;
+            color: var(--accent-glow);
+            margin: 25px 0;
+            border-radius: 8px;
+            word-break: break-all;
+        }
+
+        .instructions { color: var(--text-dim); font-size: 0.95rem; line-height: 1.5; }
     </style>
 </head>
 <body>
 
-    <div class="box">
-        <h1>🔑 Verification Check</h1>
-        <p id="status-text">Validating LootLabs secure handshake tokens...</p>
-        <div id="key-display" class="key" style="display: none;"></div>
+    <div class="success-box">
+        <div id="offline-banner" class="status-banner">
+            ⚠️ Verification Server is currently inactive. Please ensure ngrok and your Python script are running!
+        </div>
+
+        <h1>🎉 Verification Passed</h1>
+        <p style="color: var(--text-dim);">Your checkpoints are complete. Below is your generated 4X license key:</p>
+        
+        <div id="key-display" class="key-container">Validating Handshake...</div>
+        
+        <p class="instructions">
+            👉 Copy this key and head over to your Discord server.<br>
+            Use the command: <br>
+            <span style="color: #fff; font-weight: bold;">/redeemkey key: [your_key] username: [your_username]</span>
+        </p>
     </div>
 
     <script>
     window.addEventListener("DOMContentLoaded", async function() {
-        const statusText = document.getElementById("status-text");
         const keyDisplay = document.getElementById("key-display");
+        const offlineBanner = document.getElementById("offline-banner");
         
-        // Ensure this points to your active running tunnel link
+        // Ensure this matches your active ngrok tunnel address
         const apiBaseUrl = "https://optometrical-demetria-superexpressive.ngrok-free.dev";
         
-        // Grab the actual URL string containing the security sequence
+        // Capture the raw queries sent directly from LootLabs redirection
         const currentQuery = window.location.search;
 
-        // Wipe address bar tokens instantly so users can't copy/paste the link to friends
+        // Anti-Bookmark / Anti-Share: Wipe the tokens out of the address bar right away
         if (currentQuery) {
             window.history.replaceState({}, document.title, window.location.pathname);
         } else {
-            statusText.innerText = "❌ Security Error: No verification tokens found.";
+            keyDisplay.style.color = "#ff3333";
+            keyDisplay.innerText = "❌ Verification Failed: Missing LootLabs handshake queries.";
             return;
         }
 
+        // 1. Verify backend tunnel is up
         try {
-            // Send the entire verification payload to your python backend to check
+            const healthCheck = await fetch(`${apiBaseUrl}/health`, { 
+                method: "GET",
+                headers: { "ngrok-skip-browser-warning": "69420" }
+            });
+            if (!healthCheck.ok) throw new Error("Offline");
+        } catch (err) {
+            offlineBanner.style.display = "block";
+            keyDisplay.style.color = "#ff3333";
+            keyDisplay.innerText = "❌ Security System Offline.";
+            return;
+        }
+
+        // 2. Pass the full query straight to backend server to verify sequence
+        try {
             const response = await fetch(`${apiBaseUrl}/web-genkey${currentQuery}`, {
                 method: "GET",
                 headers: { "ngrok-skip-browser-warning": "69420" }
@@ -46,14 +130,14 @@
             const data = await response.json();
 
             if (response.ok && data.key) {
-                statusText.innerText = "🎉 Access Granted! Your 6-Hour Key Is:";
                 keyDisplay.innerText = data.key;
-                keyDisplay.style.display = "block";
             } else {
-                statusText.innerText = data.error || "❌ Anti-Bypass Triggered: Validation signature invalid.";
+                keyDisplay.style.color = "#ff3333";
+                keyDisplay.innerText = data.error || "❌ Verification processing failed.";
             }
         } catch (error) {
-            statusText.innerText = "❌ Connection Error: Could not connect to your server backend.";
+            keyDisplay.style.color = "#ff3333";
+            keyDisplay.innerText = "❌ Key processing execution error.";
         }
     });
     </script>
