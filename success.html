@@ -100,7 +100,9 @@
         const keyDisplay = document.getElementById("key-display");
         const offlineBanner = document.getElementById("offline-banner");
         
+        // ⚠️ REPLACE THIS URL WITH YOUR ACTIVE NGROK LINK IF IT CHANGED
         const apiBaseUrl = "https://optometrical-demetria-superexpressive.ngrok-free.dev";
+        
         const urlParams = new URLSearchParams(window.location.search);
         const currentStatus = urlParams.get("status");
 
@@ -109,7 +111,7 @@
             window.history.replaceState({}, document.title, window.location.pathname);
         }
 
-        // 1. Check if backend is alive
+        // 1. Check if backend python server is alive
         try {
             const healthCheck = await fetch(`${apiBaseUrl}/health`, { 
                 method: "GET",
@@ -123,16 +125,16 @@
             return;
         }
 
-        // 2. Enforce check constraint
+        // 2. Direct-open blocker check
         if (currentStatus !== "completed") {
             keyDisplay.style.color = "#ff3333";
-            keyDisplay.innerText = "❌ Access Denied: You cannot load this page directly or refresh it.";
+            keyDisplay.innerText = "❌ Access Denied: Direct page loading or manual refreshing is blocked.";
             return;
         }
 
         keyDisplay.innerText = "Generating key safely...";
         
-        // 3. Issue key request block using standard payload validation
+        // 3. Request Key Generation using the secure token
         try {
             const response = await fetch(`${apiBaseUrl}/web-genkey?claim_token=LOOT_VALID_PASS`, {
                 method: "GET",
